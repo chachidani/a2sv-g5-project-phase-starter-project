@@ -1,7 +1,11 @@
 package usecases
 
 import (
+<<<<<<< HEAD
 	"errors"
+=======
+	"fmt"
+>>>>>>> e77e9cdd (aait.backend.g10.Yordanos: add image upload)
 	"math/rand"
 	"time"
 
@@ -18,6 +22,7 @@ type IAuthUsecase interface {
 	LoginUser(dto *dto.LoginUserDTO) (*dto.TokenResponseDTO, *domain.CustomError)
 	RefreshTokens(refreshToken string) (*dto.TokenResponseDTO, *domain.CustomError)
 	ResetPassword(dto *dto.ResetPasswordRequestDTO) *domain.CustomError
+	VerifyUserAccessToken(token string, userId uuid.UUID) (bool, *domain.CustomError)
 	ForgotPassword(dto *dto.ForgotPasswordRequestDTO) *domain.CustomError
 	HandleGoogleCallback(userDto *domain.User) (string, string, error)
 }
@@ -149,8 +154,12 @@ func (uc *AuthUsecase) RefreshTokens(refreshToken string) (*dto.TokenResponseDTO
 		return nil, domain.ErrInvalidRefreshToken
 	}
 
-	email := claims["email"].(string)
-	user, err := uc.userRepository.GetUserByEmail(email)
+	userId := claims["id"]
+	userId, errs := uuid.Parse(userId.(string))
+	if errs != nil {
+		return nil, domain.ErrInvalidToken
+	}
+	user, err := uc.userRepository.GetUserByID(userId.(uuid.UUID))
 	if err != nil || user == nil {
 		return nil, domain.ErrUserNotFound
 	}
@@ -161,6 +170,7 @@ func (uc *AuthUsecase) RefreshTokens(refreshToken string) (*dto.TokenResponseDTO
 		return nil, domain.ErrInvalidToken
 	}
 	if user.RefreshToken != refreshToken {
+		fmt.Println("refresh token not equal")
 		return nil, domain.ErrInvalidRefreshToken
 	}
 
@@ -248,6 +258,7 @@ func (uc *AuthUsecase) ResetPassword(dto *dto.ResetPasswordRequestDTO) *domain.C
 	return uc.userRepository.UpdateUserToken(user)
 }
 
+<<<<<<< HEAD
 func (uc *AuthUsecase) HandleGoogleCallback(userDto *domain.User) (string, string, error) {
 	// Get the authorization code from the query parameters
 
@@ -290,4 +301,12 @@ func (uc *AuthUsecase) HandleGoogleCallback(userDto *domain.User) (string, strin
 	return accessToken, refreshToken, nil
 	// For example, redirect to the home page with the user info
 	// c.Redirect(http.StatusTemporaryRedirect, "/")
+=======
+func (uc *AuthUsecase) VerifyUserAccessToken(token string, userId uuid.UUID) (bool, *domain.CustomError) {
+	user, err := uc.userRepository.GetUserByID(userId)
+	if err != nil || user == nil {
+		return false, domain.ErrUserNotFound
+	}
+	return (token == user.AccessToken), nil
+>>>>>>> e77e9cdd (aait.backend.g10.Yordanos: add image upload)
 }

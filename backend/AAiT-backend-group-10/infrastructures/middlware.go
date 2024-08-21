@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-
-func AuthMiddleware(JwtService *JwtService) gin.HandlerFunc {
+func AuthMiddleware(JwtService *Jwt) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		defer context.Next()
 
@@ -28,30 +28,40 @@ func AuthMiddleware(JwtService *JwtService) gin.HandlerFunc {
 			return
 		}
 
-		token, err := JwtService.CheckToken(authPart[1])
+		token, err := JwtService.ValidateToken(authPart[1])
 
 		if token == nil || !token.Valid {
 			errMsg := "Invalid or expired token"
 
-			if err != nil {
-				errMsg = err.Error()
-			}
 			context.JSON(401, gin.H{"error": errMsg})
 			context.Abort()
 			return
 		}
+		if err != nil {
+			context.JSON(401, gin.H{"error": err.Message})
+			context.Abort()
+			return
+		}
 
-		claims, ok := FindClaim(token)
+		claims, ok := JwtService.FindClaim(token)
 		if !ok {
 			context.JSON(401, gin.H{"error": "Invalid token claims"})
 			context.Abort()
 			return
 		}
 		role := claims["is_admin"]
-		id := claims["id"]
+		id, error := uuid.Parse(claims["id"].(string))
+		if error != nil {
+			context.JSON(401, gin.H{"error": "Invalid token claims"})
+			context.Abort()
+			return
+		}
+
 		fmt.Println(role, id)
 		context.Set("is_admin", role)
 		context.Set("id", id)
+		context.Set("token", authPart[1])
+		context.Next()
 
 	}
 }

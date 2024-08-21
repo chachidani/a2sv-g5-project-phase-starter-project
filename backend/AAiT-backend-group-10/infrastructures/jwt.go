@@ -14,9 +14,9 @@ type Jwt struct {
 func (s *Jwt) GenerateToken(user *domain.User) (string, string, *domain.CustomError) {
 	// Define JWT claims
 	claims := jwt.MapClaims{
-		"email": user.Email,
-		"exp":   time.Now().Add(time.Hour * 1).Unix(), // 1 hour expiration
-		"admin": user.IsAdmin,
+		"id":       user.ID,
+		"exp":      time.Now().Add(time.Hour * 1).Unix(), // 1 hour expiration
+		"is_admin": user.IsAdmin,
 	}
 
 	// Create access token
@@ -28,8 +28,8 @@ func (s *Jwt) GenerateToken(user *domain.User) (string, string, *domain.CustomEr
 
 	// Create refresh token (valid for 7 days)
 	refreshClaims := jwt.MapClaims{
-		"email": user.Email,
-		"exp":   time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"id":  user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	refreshTokenString, err := refreshToken.SignedString([]byte(s.JwtSecret))
@@ -69,4 +69,8 @@ func (s *Jwt) GenerateResetToken(email string, code int64) (string, *domain.Cust
 	}
 
 	return tokenString, nil
+}
+func (s *Jwt) FindClaim(token *jwt.Token) (jwt.MapClaims, bool) {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	return claims, ok
 }

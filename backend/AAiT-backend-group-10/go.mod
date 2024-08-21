@@ -3,13 +3,16 @@ module aait.backend.g10
 go 1.22.5
 
 require (
+	github.com/cloudinary/cloudinary-go v1.7.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.16.1
 )
 
-require github.com/pkg/errors v0.9.1
+require (
+	github.com/creasty/defaults v1.7.0 // indirect
+	github.com/gorilla/schema v1.4.1
 
 require (
 	cloud.google.com/go/auth v0.9.0 // indirect
@@ -29,6 +32,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
 	google.golang.org/grpc v1.65.0 // indirect
+)
 )
 
 require (
@@ -50,7 +54,6 @@ require (
 )
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0 // direct
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

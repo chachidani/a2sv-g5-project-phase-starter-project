@@ -1,11 +1,8 @@
 package usecases
 
 import (
-<<<<<<< HEAD
 	"errors"
-=======
 	"fmt"
->>>>>>> e77e9cdd (aait.backend.g10.Yordanos: add image upload)
 	"math/rand"
 	"time"
 
@@ -258,7 +255,6 @@ func (uc *AuthUsecase) ResetPassword(dto *dto.ResetPasswordRequestDTO) *domain.C
 	return uc.userRepository.UpdateUserToken(user)
 }
 
-<<<<<<< HEAD
 func (uc *AuthUsecase) HandleGoogleCallback(userDto *domain.User) (string, string, error) {
 	// Get the authorization code from the query parameters
 
@@ -301,12 +297,11 @@ func (uc *AuthUsecase) HandleGoogleCallback(userDto *domain.User) (string, strin
 	return accessToken, refreshToken, nil
 	// For example, redirect to the home page with the user info
 	// c.Redirect(http.StatusTemporaryRedirect, "/")
-=======
+}
 func (uc *AuthUsecase) VerifyUserAccessToken(token string, userId uuid.UUID) (bool, *domain.CustomError) {
 	user, err := uc.userRepository.GetUserByID(userId)
 	if err != nil || user == nil {
 		return false, domain.ErrUserNotFound
 	}
 	return (token == user.AccessToken), nil
->>>>>>> e77e9cdd (aait.backend.g10.Yordanos: add image upload)
 }

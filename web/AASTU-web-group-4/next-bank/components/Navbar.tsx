@@ -65,7 +65,7 @@ export const Navbar: FC<NavbarProps> = ({ pageTitle, toggleSidebar }) => {
           />
         </div>
         <div className="flex items-center gap-4">
-         
+          <ThemeSwitch/>
           <div className="flex items-center rounded-full bg-gray-100 p-2">
             <FaBell className="text-red-600" size={20} />
           </div>
@@ -75,8 +75,8 @@ export const Navbar: FC<NavbarProps> = ({ pageTitle, toggleSidebar }) => {
         <Image
           src="/Images/profilepic.jpeg"
           alt="User Profile"
-          width={30}
-          height={30}
+          width={40}
+          height={40}
           className="rounded-full aspect-square object-cover cursor-pointer"
         />
       </div>
